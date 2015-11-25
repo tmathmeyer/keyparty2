@@ -29,8 +29,7 @@ app.get("u/_var", function(res, req, user) {
             "keys": !keys?[]:Object.keys(keys).map(function(key) {
                 return {
                     "name":key,
-                    "token": user,
-                    "fingerprint": prints[key]
+                    "token": user
                 };
             })
         });
