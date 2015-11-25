@@ -5,7 +5,7 @@ var client = require('redis').createClient();
 var exec = require('child_process').exec;
 var zip = require('adm-zip');
 
-var app = isotope.create(8080, [
+var app = isotope.create(7823, [
     isotemplate.engine,
     isoauth.auth({
         "db": "redis",
