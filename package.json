@@ -1,0 +1,26 @@
+{
+  "name": "keyparty2",
+  "version": "1.0.0",
+  "description": "A pgp keyparty server",
+  "main": "keyparty.js",
+  "dependencies": {
+    "adm-zip": "^0.4.7",
+    "isotemplate": "^1.0.8",
+    "isoauth": "^2.0.15",
+    "isotope": "^0.5.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmathmeyer/keyparty2.git"
+  },
+  "author": "Ted Meyer",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/tmathmeyer/keyparty2/issues"
+  },
+  "homepage": "https://github.com/tmathmeyer/keyparty2#readme"
+}

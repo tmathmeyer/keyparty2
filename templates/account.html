@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript">
+            submit = function() {
+                $.post("/account/newkey", {
+                    "pgpkey":  document.getElementById("pubkey").value,
+                    "keyname":  document.getElementById("key").value
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <p> to get your PGP key, run 'gpg --armor --export [your-email] | xclip' in the terminal, and paste the output below</p>
+        <p>
+        <a href="/pgptips">Other Helpful PGP tips</a>
+        </p>
+        <br />
+        <hr />
+        <br />
+        Your public keys:
+        <br />
+        <ul>
+        {{keys}}
+            <li>
+            {{name}} (<a href="/u/{{token}}/{{name}}">details</a>)
+                     (<a href="/sig/{{fingerprint}}">signitures</a>)
+                     (<a href="/account/delkey/{{name}}">delete</a>)
+            </li>
+        {{/keys}}
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <form action="/account/newkey" method="POST">
+        <input type="text" id="key" placeholder="keyname" name="keyname"/>
+        <br />
+        <br />
+        <textarea id="pubkey" name="pgpkey" rows="10" cols="70" placeholder="paste ascii key here"></textarea>
+        <br />
+        <br />
+        <input type="submit" value="Submit Key"/>
+        </form>
+    </body>
+</html>
