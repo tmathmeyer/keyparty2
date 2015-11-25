@@ -26,7 +26,14 @@ app.get("", function(res) {
 app.get("u/_var", function(res, req, user) {
     client.hgetall(user+"-prints", function(err, keys) {
         app.template(res, "templates/userpage.html", {
-            "keys": JSON.stringify(keys)
+            "keys": !keys?[]:Object.keys(keys).map(function(key) {
+                return {
+                    "name":key,
+                    "key": keys[key],
+                    "token": usertoken,
+                    "fingerprint": prints[key]
+                };
+            })
         });
     });
 });

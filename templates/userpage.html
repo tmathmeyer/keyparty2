@@ -1,3 +1,11 @@
 <html>
-<body>{{keys}}</body>
+<body>
+	<ul>
+		{{keys}}
+		<li>
+			{{name}} (<a href="/u/{{token}}/{{name}}">details</a>)
+		</li>
+		{{/keys}}
+	</ul>
+</body>
 </html>
