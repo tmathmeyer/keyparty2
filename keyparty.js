@@ -19,8 +19,29 @@ var app = isotope.create(7823, [
     })
 ]);
 
+
+var servername = "ACM Keyparty Server";
+
 app.get("", function(res) {
+    app.template(res, "index.html", {
+        "keyservername": servername
+    });
+});
+
+
+
+
+
+
+
+
+app.get("search", function(res, req) {
+    console.log("search");
     res.stream.relative("index.html");
+});
+
+app.get("pgptips", function(res, req) {
+    res.stream.relative("pgptips.html");
 });
 
 app.get("u/_var", function(res, req, user) {
