@@ -12,5 +12,32 @@
         <pre>
         gpg --armor --export [your-email]
         </pre>
+        <br />
+        <br />
+        <b>Importing a key a public key:</b>
+        <pre>
+        gpg --import [keyfile][.asc]
+        </pre>
+        <br />
+        <br />
+        <b>Signing and Validating a key:</b>
+        <pre>
+        gpg --edit-key [other-email]                         | after importing key
+        Command> fpr                                         | get the fingerprint. veryify
+        pub [keyinfo] [date] [name] [note] [other-email]     | the fingerprint with the key owner
+            Fingerprint: [fingerprint]                       |
+                                                             |
+        Command> sign                                        |
+        pub [keyinfo] created: [date] expires: [date/never]  |
+            Fingerprint: [fingerprint]                       |
+                          [name] [note] [email]              |
+                                                             |
+        Are you really sure that you want to sign this key   |
+        with your key: "[yourname] [your email]"             |
+        Really sign?                                         | if you trust this person, sign their key
+                                                             |
+                                                             | always check afterwards!
+        Command> check                                       |
+        </pre>
     </body>
 </html>
