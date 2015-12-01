@@ -98,6 +98,9 @@ app.get("users", function(res) {
     res.write("<html><body><ul>");
     client.hkeys('auth:users', function(err, keys) {
         var x = keys.length;
+        if (x == 0) {
+            res.end("</ul></body></html>");
+        }
         keys.forEach(function(each) {
             client.hget('auth:users', each, function(err, uuid) {
                 res.write("<li><a href='/u/"+uuid+"'>"+each+"</li>");
