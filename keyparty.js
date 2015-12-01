@@ -40,7 +40,7 @@ app.post("search", function(res, req) {
         var search = data.search.toUpperCase();
         client.hgetall("fingerprints", function(err, data) {
            app.template(res, "templates/search.html", {
-               "keys": Object.keys(data).filter(function(each) {
+               "keys": !data?[]:Object.keys(data).filter(function(each) {
                    return each.indexOf(search) > -1;
                }).map(function(each) {
                    return {
