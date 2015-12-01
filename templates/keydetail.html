@@ -1,18 +1,20 @@
 <html>
 <head>
 <title>
-{{user}} : {{keyname}}
+{{user}} : {{fingerprint}}
 </title>
 </head>
 <body>
-<a href="/d/{{user}}/{{keyname}}">Download key (ascii armor)</a>
+<a href="/">home</a>
+<br />
+<a href="/d/{{user}}/{fingerprint}}">Download key (ascii armor)</a>
 <br />
 <hr />
 <form action="/s/{{fingerprint}}" method="POST">
 <textarea id="pubkey" name="pgpkey" rows="10" cols="70" placeholder="paste signed key here"></textarea>
 <br />
 <br />
-<input type="submit" value="Submit Signiture ({{signed}})"/>
+<input type="submit" value="Submit Signiture"/>
 </form>
 <hr />
 fingerprint: {{fingerprint}}

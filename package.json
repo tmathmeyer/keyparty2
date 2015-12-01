@@ -5,13 +5,14 @@
   "main": "keyparty.js",
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "isotemplate": "^1.0.8",
     "isoauth": "^2.0.15",
-    "isotope": "^0.5.5"
+    "isotemplate": "^1.0.8",
+    "isotope": "^0.5.5",
+    "nodemon": "^1.8.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon keyparty.js"
   },
   "repository": {
     "type": "git",

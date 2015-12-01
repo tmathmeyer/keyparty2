@@ -35,9 +35,22 @@ app.get("", function(res) {
 
 
 
-app.get("search", function(res, req) {
-    console.log("search");
-    res.stream.relative("index.html");
+app.post("search", function(res, req) {
+    app.extract_data(req, function(data) {
+        var search = data.search.toUpperCase();
+        client.hgetall("fingerprints", function(err, data) {
+           app.template(res, "templates/search.html", {
+               "keys": Object.keys(data).filter(function(each) {
+                   return each.indexOf(search) > -1;
+               }).map(function(each) {
+                   return {
+                       "fpr":each,
+                       "usr":data[each]
+                   };
+               })
+           });
+        });
+    });
 });
 
 app.get("pgptips", function(res, req) {
@@ -45,11 +58,11 @@ app.get("pgptips", function(res, req) {
 });
 
 app.get("u/_var", function(res, req, user) {
-    client.hgetall(user+"-prints", function(err, keys) {
+    client.hgetall(user+"-keys", function(err, keys) {
         app.template(res, "templates/userpage.html", {
             "keys": !keys?[]:Object.keys(keys).map(function(key) {
                 return {
-                    "name":key,
+                    "name": key,
                     "token": user
                 };
             })
@@ -60,17 +73,15 @@ app.get("u/_var", function(res, req, user) {
 account = function(res, req) {
     app.auth(res, req, function(usertoken) {
         client.hgetall(usertoken+"-keys", function(err, keys) {
-            client.hgetall(usertoken+"-prints", function(err, prints) {
-                app.template(res, "templates/account.html", {
-                    "keys": !keys?[]:Object.keys(keys).map(function(key) {
-                        return {
-                            "name":key,
-                            "key": keys[key],
-                            "token": usertoken,
-                            "fingerprint": prints[key]
-                        };
-                    })
-                });
+            app.template(res, "templates/account.html", {
+                "keys": !keys?[]:Object.keys(keys).map(function(key) {
+                    return {
+                        "name":key,
+                        "key": keys[key],
+                        "token": usertoken,
+                        "fingerprint": key
+                    };
+                })
             });
         });
     });
@@ -102,36 +113,32 @@ app.get("users", function(res) {
 app.post("account/newkey", function(res, req) {
     app.auth(res, req, function(uuid){
         app.extract_data(req, function(data){
-            if (!data || !data.keyname || data.keyname < 3) {
-                res.writeHead(500, {"Content-Type": "text/plain"});
-                res.end("null");
-            } else {
-                exec(fingerprint(data.pgpkey), function(error, out, err) {
-                    if (error || out.length < 32) {
-                        res.writeHead(400, {
-                            "Content-Type":"text/plain"
+            exec(fingerprint(data.pgpkey), function(error, out, err) {
+                if (error || out.length < 32) {
+                    res.writeHead(400, {
+                        "Content-Type":"text/plain"
+                    });
+                    res.end("bad key");
+                } else {
+                    out = out.replace(/\s/g, '');
+                    client.hset(uuid+'-keys', out, data.pgpkey, function(err1, r) {
+                        client.sadd(uuid+'-prints', out, function(err2, r) {
+                            client.hset("fingerprints", out, uuid);
+                            if (!err && !err2) {
+                                res.writeHead(302, {
+                                    "Content-Type":"text/plain",
+                                    "Location": "/account"
+                                });
+                                res.end("ok");
+                            } else {
+                                res.writeHead(500, {"Content-Type": "text/plain"});
+                                res.write(JSON.stringify(err1));
+                                res.end(JSON.stringify(err2));
+                            }
                         });
-                        res.end("bad key");
-                    } else {
-                        out = out.replace(/\s/g, '');
-                        client.hset(uuid+'-keys', data.keyname, data.pgpkey, function(err1, r) {
-                            client.hset(uuid+'-prints', data.keyname, out, function(err2, r) {
-                                if (!err && !err2) {
-                                    res.writeHead(302, {
-                                        "Content-Type":"text/plain",
-                                        "Location": "/account"
-                                    });
-                                    res.end("ok");
-                                } else {
-                                    res.writeHead(500, {"Content-Type": "text/plain"});
-                                    res.write(JSON.stringify(err1));
-                                    res.end(JSON.stringify(err2));
-                                }
-                            });
-                        });
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
     });
 });
@@ -155,7 +162,7 @@ app.get("u/_var/_var", function(res, req, user, key) {
                 "keyname": key,
                 "pgpkey": pgpkey,
                 "user": user,
-                "fingerprint": fingerprint
+                "fingerprint": key
             });
         });
     });

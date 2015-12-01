@@ -5,7 +5,6 @@
             submit = function() {
                 $.post("/account/newkey", {
                     "pgpkey":  document.getElementById("pubkey").value,
-                    "keyname":  document.getElementById("key").value
                 });
             }
         </script>
@@ -35,9 +34,6 @@
         <hr />
         <br />
         <form action="/account/newkey" method="POST">
-        <input type="text" id="key" placeholder="keyname" name="keyname"/>
-        <br />
-        <br />
         <textarea id="pubkey" name="pgpkey" rows="10" cols="70" placeholder="paste ascii key here"></textarea>
         <br />
         <br />
