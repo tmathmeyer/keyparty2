@@ -192,7 +192,9 @@ app.post("s/_var", function(res, req, fingerprint){
 
 app.get("sigs", function(res) {
     var file = new zip();
+    keycount = 0;
     netwrite = function() {
+        console.log("serving "+keycount+" keys");
         if (keycount > 0) {
             res.writeHead(200, {"Content-Type": "application/zip"});
             res.end(file.toBuffer());
@@ -201,15 +203,14 @@ app.get("sigs", function(res) {
             res.end("no users");
         }
     }
-    keycount = 0;
     client.hkeys('auth:users', function(err, keys) {
         var x = keys.length;
+        console.log(x + " users iterating");
         if (x == 0) {
             netwrite();
         }
         keys.forEach(function(each) {
             client.hget('auth:users', each, function(err, uuid) {
-                x--;
                 client.hkeys(uuid+"-keys", function(err, keys) {
                     var y = keys.length;
                     if (y==0 && x==0) {
@@ -220,6 +221,9 @@ app.get("sigs", function(res) {
                                 file.addFile(each+".key", new Buffer(pgpkey), "key_no:"+y);
                                 keycount++;
                                 y--;
+                                if(y==0) {
+                                    x--;
+                                }
                                 if (y==0 && x==0) {
                                     netwrite();
                                 }
