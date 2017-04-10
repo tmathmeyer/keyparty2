@@ -190,6 +190,48 @@ app.post("s/_var", function(res, req, fingerprint){
     });
 });
 
+app.get("sigs", function(res) {
+    var file = new zip();
+    netwrite = function() {
+        if (keycount > 0) {
+            res.writeHead(200, {"Content-Type": "application/zip"});
+            res.end(file.toBuffer());
+        } else {
+            res.writeHead(404, {"Content-Type": "text/plain"});
+            res.end("no users");
+        }
+    }
+    keycount = 0;
+    client.hkeys('auth:users', function(err, keys) {
+        var x = keys.length;
+        if (x == 0) {
+            netwrite();
+        }
+        keys.forEach(function(each) {
+            client.hget('auth:users', each, function(err, uuid) {
+                x--;
+                client.hkeys(uuid+"-keys", function(err, keys) {
+                    var y = keys.length;
+                    if (y==0 && x==0) {
+                        netwrite();
+                    } else {
+                        keys.forEach(function(each) {
+                            client.hget(uuid+"-keys", each, function(err, pgpkey) {
+                                file.addFile(each+".key", new Buffer(pgpkey), "key_no:"+y);
+                                keycount++;
+                                y--;
+                                if (y==0 && x==0) {
+                                    netwrite();
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    });
+});
+
 app.get("sig/_var", function(res, req, fingerprint){
     var file = new zip();
     client.smembers(fingerprint, function(err, data) {
