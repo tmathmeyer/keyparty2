@@ -28,8 +28,10 @@ app.get("", function(res) {
     });
 });
 
-
-
+app.get("favicon.ico", function(res) {
+    res.writeHead(404, {"Content-Type": "text/plain"});
+    res.end("No favicon");
+});
 
 
 

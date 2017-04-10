@@ -8,6 +8,12 @@
         <b>PGP clients: </b> GNU Privacy Guard (GPG)
         <br />
         <br />
+        <b>Creating a key</b>
+        <pre>
+        gpg --gen-key
+        </pre>
+        <br />
+        <br />
         <b>Exporting a public key:</b>
         <pre>
         gpg --armor --export [your-email]
@@ -34,10 +40,13 @@
                                                              |
         Are you really sure that you want to sign this key   |
         with your key: "[yourname] [your email]"             |
-        Really sign?                                         | if you trust this person, sign their key
+        Really sign?                                         | if you can validate this person's identity, sign the key
                                                              |
-                                                             | always check afterwards!
-        Command> check                                       |
+                                                             |
+        Command> trust                                       | determine how much you trust this person. NEVER use option 5
+                                                             |
+                                                             |
+        Command> check                                       | always check afterwards!
         </pre>
     </body>
 </html>
