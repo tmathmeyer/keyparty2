@@ -122,6 +122,8 @@ app.post("account/newkey", function(res, req) {
                         "Content-Type":"text/plain"
                     });
                     res.end("bad key");
+                    console.log(out);
+                    console.log(error);
                 } else {
                     out = out.replace(/\s/g, '');
                     client.hset(uuid+'-keys', out, data.pgpkey, function(err1, r) {
@@ -208,5 +210,5 @@ app.get("sig/_var", function(res, req, fingerprint){
 });
 
 fingerprint = function(key) {
-    return "echo \""+key+"\" | gpg --with-fingerprint | grep 'Key fingerprint' | cut -c 25-";
+    return "echo \""+key+"\" | gpg | awk 'NR==2' | tr -d ' \t\n\r'";
 }
