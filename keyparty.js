@@ -215,9 +215,13 @@ app.get("sigs", function(res) {
             client.hget('auth:users', each, function(err, uuid) {
                 client.hkeys(uuid+"-keys", function(err, keys) {
                     var y = keys.length;
+                    if (y==0) {
+                        x--;
+                    }
                     if (y==0 && x==0) {
                         netwrite();
-                    } else {
+                    }
+                    if (y != 0) {
                         keys.forEach(function(each) {
                             client.hget(uuid+"-keys", each, function(err, pgpkey) {
                                 file.addFile(each+".key", new Buffer(pgpkey), "key_no:"+y);
